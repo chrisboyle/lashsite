@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.responsive.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/mezzanine.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/custom.css">
 {% ifinstalled cartridge.shop %}
 <link rel="stylesheet" href="{{ STATIC_URL }}css/cartridge.css">
 {% endifinstalled %}
@@ -57,13 +58,15 @@ $(function() {
     {% if settings.SITE_TAGLINE %}<p class="tagline">{{ settings.SITE_TAGLINE }}</p>{% endif %}
     <div class="nav-collapse">
         {% search_form "all" %}
+        <span id="topnav">
         {% page_menu "pages/menus/dropdown.html" %}
+        </span>
     </div>
 </div>
 </div>
 </div>
 
-<div class="container">
+<div class="container" id="content">
 
 {% nevercache %}
 {% for message in messages %}
@@ -82,12 +85,9 @@ $(function() {
 {% endspaceless %}
 </ul>
 
-</div>
-
-<div class="container">
 <div class="row">
 
-<div class="span2 left">
+<div class="span2 left" id="leftnav">
     {% block left_panel %}
     <div class="panel tree">{% page_menu "pages/menus/tree.html" %}</div>
     {% endblock %}
@@ -115,7 +115,6 @@ $(function() {
 
 <footer>
 <div class="container">
-{% page_menu "pages/menus/footer.html" %}
 <br style="clear:both">
 <p>
     {% trans "Powered by" %}
