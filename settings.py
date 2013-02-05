@@ -98,7 +98,7 @@ MANAGERS = ADMINS
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = None
+TIME_ZONE = "Europe/London"
 
 # If you set this to True, Django will use timezone-aware datetimes.
 USE_TZ = True
@@ -243,7 +243,10 @@ INSTALLED_APPS = (
     "mezzanine.twitter",
     #"mezzanine.accounts",
     #"mezzanine.mobile",
+    "mezzanine_events",
 )
+
+MZEVENTS_GOOGLE_MAPS_DOMAIN = 'maps.google.co.uk'
 
 # List of processors used by RequestContext to populate the context.
 # Each one should be a callable that takes the request object as its
