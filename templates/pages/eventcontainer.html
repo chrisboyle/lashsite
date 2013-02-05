@@ -9,6 +9,7 @@
         Subscribe to all events in Google Calendar/Outlook/iCal
     </a>
 </div>
+<br style="clear:both">
 
 {% for child in page.children.all %}
     <h3><a href="{{child.get_absolute_url}}">{{child.title}}</a> <small>{{child.event.date}} from {{child.event.start_time}} to {{child.event.end_time}}</small></h3>
