@@ -28,3 +28,10 @@ DATABASES = {
 }
 EOF
 python manage.py createdb
+python manage.py runserver
+
+Now visit http://localhost:8000/admin
+* Create a "Rich-text page" called "Home" with URL "/"
+  * un-tick show in navigation (it's already shown automatically)
+  * don't include the gig/blog panels; they're in templates/pages/index.html
+* Create an "Event container" called "Gigs" with URL "/gigs"
