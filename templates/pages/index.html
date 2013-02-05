@@ -1,10 +1,26 @@
 {% extends "pages/richtextpage.html" %}
 
+{% block title %}{{ settings.SITE_TITLE }}{% endblock %}
+
 {% block main %}
-<!--
-This template is provided as a custom template for the homepage, for
-when it is configured as an editable page in the navigation tree. Feel
-free to modify it.
--->
 {{ block.super }}
+
+<div class="panel frontblock">
+	<h4>Our next gig</h4>
+	<a href="/gigs"><b>Amazing Gig Title Goes Here!</b></a>
+	<table>
+		<tr><th scope="row">When</th><td>Thu 32<sup>nd</sup> Jan 7:00pm</td></tr>
+		<tr><th scope="row">Where</th><td><a href="http://maps.google.co.uk/maps?q=London">Location goes here</a></td></tr>
+	</table>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+</div>
+
+<div class="panel frontblock last">
+	<h4>Latest blog post</h4>
+	<a href="/blog"><b>Intriguing Blog Post Title Goes Here</b></a>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+</div>
+
+<br style="clear:both">
+
 {% endblock %}
