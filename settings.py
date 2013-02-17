@@ -244,6 +244,7 @@ INSTALLED_APPS = (
     #"mezzanine.accounts",
     #"mezzanine.mobile",
     "mezzanine_events",
+    "homeblocks",
 )
 
 MZEVENTS_GOOGLE_MAPS_DOMAIN = 'maps.google.co.uk'
