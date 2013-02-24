@@ -11,20 +11,7 @@ sudo pip install mezzanine
 sudo pip install mezzanine-events
 git pull git://github.com/chrisboyle/lashsite.git
 cd lashsite
-python -c 'import random; print "SECRET_KEY = \"%s\"" % ("".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))' >local_settings.py
-cat <<EOF >>local_settings.py
-DEBUG = True
-DATABASES = {
-    "default": {
-        # Ends with "postgresql_psycopg2", "mysql", "sqlite3" or "oracle".
-        "ENGINE": "django.db.backends.sqlite3",
-        # DB name or path to database file if using sqlite3.
-        "NAME": "dev.db",
-        # Not used with sqlite3.
-        "USER": "", "PASSWORD": "", "HOST": "", "PORT": "",
-    }
-}
-EOF
+python mk_local_settings.py
 python manage.py createdb
 python manage.py runserver
 

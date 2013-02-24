@@ -46,7 +46,6 @@ env.manage = "%s/bin/python %s/project/manage.py" % (env.venv_path,
 env.live_host = conf.get("LIVE_HOSTNAME", env.hosts[0] if env.hosts else None)
 env.repo_url = conf.get("REPO_URL", None)
 env.reqs_path = conf.get("REQUIREMENTS_PATH", None)
-env.gunicorn_port = conf.get("GUNICORN_PORT", 8000)
 env.locale = conf.get("LOCALE", "en_US.UTF-8")
 
 
@@ -58,27 +57,8 @@ env.locale = conf.get("LOCALE", "en_US.UTF-8")
 # contents has changed, in which case, the reload command is
 # also run.
 
+# Webserver and cron are managed manually, so omitted here
 templates = {
-    "nginx": {
-        "local_path": "deploy/nginx.conf",
-        "remote_path": "/etc/nginx/sites-enabled/%(proj_name)s.conf",
-        "reload_command": "service nginx restart",
-    },
-    "supervisor": {
-        "local_path": "deploy/supervisor.conf",
-        "remote_path": "/etc/supervisor/conf.d/%(proj_name)s.conf",
-        "reload_command": "supervisorctl reload",
-    },
-    "cron": {
-        "local_path": "deploy/crontab",
-        "remote_path": "/etc/cron.d/%(proj_name)s",
-        "owner": "root",
-        "mode": "600",
-    },
-    "gunicorn": {
-        "local_path": "deploy/gunicorn.conf.py",
-        "remote_path": "%(proj_path)s/gunicorn.conf.py",
-    },
     "settings": {
         "local_path": "deploy/live_settings.py",
         "remote_path": "%(proj_path)s/local_settings.py",
@@ -174,7 +154,9 @@ def sudo(command, show=True):
     if show:
         print_command(command)
     with hide("running"):
-        return _sudo(command)
+        #return _sudo(command)
+        # deployment user doesn't have root in our setup
+        return _run(command)
 
 
 def log_call(func):
@@ -221,7 +203,8 @@ def upload_template_and_reload(name):
     clean = lambda s: s.replace("\n", "").replace("\r", "").strip()
     if clean(remote_data) == clean(local_data):
         return
-    upload_template(local_path, remote_path, env, use_sudo=True, backup=False)
+    #upload_template(local_path, remote_path, env, use_sudo=True, backup=False)
+    upload_template(local_path, remote_path, env, use_sudo=False, backup=False)
     if owner:
         sudo("chown %s %s" % (owner, remote_path))
     if mode:
@@ -240,14 +223,6 @@ def db_pass():
 
 
 @task
-def apt(packages):
-    """
-    Installs one or more system packages via apt.
-    """
-    return sudo("apt-get install -y -q " + packages)
-
-
-@task
 def pip(packages):
     """
     Installs one or more Python packages within the virtual environment.
@@ -261,7 +236,9 @@ def postgres(command):
     Runs the given command as the postgres user.
     """
     show = not command.startswith("psql")
-    return run("sudo -u root sudo -u postgres %s" % command, show=show)
+    #return run("sudo -u root sudo -u postgres %s" % command, show=show)
+    # deployment user doesn't have root in our setup
+    return run(command, show=show)
 
 
 @task
@@ -327,24 +304,6 @@ def manage(command):
 
 @task
 @log_call
-def install():
-    """
-    Installs the base system and Python requirements for the entire server.
-    """
-    locale = "LC_ALL=%s" % env.locale
-    with hide("stdout"):
-        if locale not in sudo("cat /etc/default/locale"):
-            sudo("update-locale %s" % locale)
-            run("exit")
-    sudo("apt-get update -y -q")
-    apt("nginx libjpeg-dev python-dev python-setuptools git-core "
-        "postgresql libpq-dev memcached supervisor")
-    sudo("easy_install pip")
-    sudo("pip install virtualenv mercurial")
-
-
-@task
-@log_call
 def create():
     """
     Create a new virtual environment for a project.
@@ -366,42 +325,12 @@ def create():
         vcs = "git" if env.repo_url.startswith("git") else "hg"
         run("%s clone %s %s" % (vcs, env.repo_url, env.proj_path))
 
-    # Create DB and DB user.
-    pw = db_pass()
-    user_sql_args = (env.proj_name, pw.replace("'", "\'"))
-    user_sql = "CREATE USER %s WITH ENCRYPTED PASSWORD '%s';" % user_sql_args
-    psql(user_sql, show=False)
-    shadowed = "*" * len(pw)
-    print_command(user_sql.replace("'%s'" % pw, "'%s'" % shadowed))
-    psql("CREATE DATABASE %s WITH OWNER %s ENCODING = 'UTF8' "
-         "LC_CTYPE = '%s' LC_COLLATE = '%s' TEMPLATE template0;" %
-         (env.proj_name, env.proj_name, env.locale, env.locale))
-
-    # Set up SSL certificate.
-    conf_path = "/etc/nginx/conf"
-    if not exists(conf_path):
-        sudo("mkdir %s" % conf_path)
-    with cd(conf_path):
-        crt_file = env.proj_name + ".crt"
-        key_file = env.proj_name + ".key"
-        if not exists(crt_file) and not exists(key_file):
-            try:
-                crt_local, = glob(os.path.join("deploy", "*.crt"))
-                key_local, = glob(os.path.join("deploy", "*.key"))
-            except ValueError:
-                parts = (crt_file, key_file, env.live_host)
-                sudo("openssl req -new -x509 -nodes -out %s -keyout %s "
-                     "-subj '/CN=%s' -days 3650" % parts)
-            else:
-                upload_template(crt_local, crt_file, use_sudo=True)
-                upload_template(key_local, key_file, use_sudo=True)
-
     # Set up project.
     upload_template_and_reload("settings")
     with project():
         if env.reqs_path:
             pip("-r %s/%s" % (env.proj_path, env.reqs_path))
-        pip("gunicorn setproctitle south psycopg2 "
+        pip("setproctitle south psycopg2 "
             "django-compressor python-memcached")
         manage("createdb --noinput --nodata")
         python("from django.conf import settings;"
@@ -435,8 +364,6 @@ def remove():
         remote_path = template["remote_path"]
         if exists(remote_path):
             sudo("rm %s" % remote_path)
-    psql("DROP DATABASE %s;" % env.proj_name)
-    psql("DROP USER %s;" % env.proj_name)
 
 
 ##############
@@ -447,14 +374,15 @@ def remove():
 @log_call
 def restart():
     """
-    Restart gunicorn worker processes for the project.
+    Restart uwsgi worker processes for the project.
     """
-    pid_path = "%s/gunicorn.pid" % env.proj_path
+    pid_path = "/run/uwsgi/app/lashsite/pid"
     if exists(pid_path):
         sudo("kill -HUP `cat %s`" % pid_path)
     else:
-        start_args = (env.proj_name, env.proj_name)
-        sudo("supervisorctl start %s:gunicorn_%s" % start_args)
+        #sudo("service uwsgi restart")
+        print "\nuwsgi not running! Please ask server admin to restart uwsgi."
+        return False
 
 
 @task
@@ -510,14 +438,3 @@ def rollback():
         restore("last.db")
     restart()
 
-
-@task
-@log_call
-def all():
-    """
-    Installs everything required on a new system and deploy.
-    From the base software, up to the deployed project.
-    """
-    install()
-    if create():
-        deploy()
