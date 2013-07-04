@@ -5,6 +5,7 @@ from functools import wraps
 from getpass import getpass, getuser
 from glob import glob
 from contextlib import contextmanager
+from posixpath import join
 
 from fabric.api import env, cd, prefix, sudo as _sudo, run as _run, hide, task
 from fabric.contrib.files import exists, upload_template
@@ -16,7 +17,8 @@ from fabric.colors import yellow, green, blue, red
 ################
 
 conf = {}
-if sys.argv[0].split(os.sep)[-1] == "fab":
+if sys.argv[0].split(os.sep)[-1] in ("fab",             # POSIX
+                                     "fab-script.py"):  # Windows
     # Ensure we import settings from the current dir
     try:
         conf = __import__("settings", globals(), locals(), [], 0).FABRIC
@@ -96,7 +98,7 @@ def update_changed_requirements():
     Checks for changes in the requirements file across an update,
     and gets new requirements if changes have occurred.
     """
-    reqs_path = os.path.join(env.proj_path, env.reqs_path)
+    reqs_path = join(env.proj_path, env.reqs_path)
     get_reqs = lambda: run("cat %s" % reqs_path, show=False)
     old_reqs = get_reqs() if env.reqs_path else ""
     yield
@@ -287,7 +289,7 @@ def static():
     Returns the live STATIC_ROOT directory.
     """
     return python("from django.conf import settings;"
-                  "print settings.STATIC_ROOT").split("\n")[-1]
+                  "print settings.STATIC_ROOT", show=False).split("\n")[-1]
 
 
 @task
@@ -407,7 +409,9 @@ def deploy():
         upload_template_and_reload(name)
     with project():
         backup("last.db")
-        run("tar -cf last.tar %s" % static())
+        static_dir = static()
+        if exists(static_dir):
+            run("tar -cf last.tar %s" % static_dir)
         git = env.git
         last_commit = "git rev-parse HEAD" if git else "hg id -i"
         run("%s > last.commit" % last_commit)
@@ -434,8 +438,8 @@ def rollback():
         with update_changed_requirements():
             update = "git checkout" if env.git else "hg up -C"
             run("%s `cat last.commit`" % update)
-        with cd(os.path.join(static(), "..")):
-            run("tar -xf %s" % os.path.join(env.proj_path, "last.tar"))
+        with cd(join(static(), "..")):
+            run("tar -xf %s" % join(env.proj_path, "last.tar"))
         restore("last.db")
     restart()
 

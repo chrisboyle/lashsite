@@ -1,2 +1,2 @@
-Mezzanine==1.4.2
-mezzanine_events==0.1
+Mezzanine==1.4.7
+mezzanine_events==0.1.2
