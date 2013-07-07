@@ -4,6 +4,12 @@ from mezzanine.blog.models import BlogPost
 from mezzanine_events.models import Event
 import datetime
 
+# TODO find a better home for this - it hides non-event pages from the event container
+from mezzanine_events.models import EventContainer
+def really_events(self):
+	return self.children.published().filter(content_model='event').order_by('_order')
+EventContainer.events = really_events
+
 @processor_for("/")
 def homeblocks(request, page):
 	settings.use_editable()
