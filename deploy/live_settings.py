@@ -1,3 +1,5 @@
+from local_secret import *
+
 DEBUG = False
 
 ADMINS = (
