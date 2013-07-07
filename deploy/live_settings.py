@@ -16,6 +16,8 @@ DATABASES = {
     }
 }
 
+ALLOWED_HOSTS = ['.lashings.org','lashtest2013.absurdity.org.uk']
+
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTOCOL", "https")
 
 CACHE_MIDDLEWARE_SECONDS = 60
