@@ -74,6 +74,8 @@ PAGE_MENU_TEMPLATES = (
 #
 # BLOG_USE_FEATURED_IMAGE = True
 
+BLOG_URLS_DATE_FORMAT = 'month'
+
 # If True, the south application will be automatically added to the
 # INSTALLED_APPS setting.
 USE_SOUTH = True
