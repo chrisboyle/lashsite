@@ -76,6 +76,8 @@ PAGE_MENU_TEMPLATES = (
 
 BLOG_URLS_DATE_FORMAT = 'month'
 
+COMMENTS_USE_RATINGS = False
+
 # If True, the south application will be automatically added to the
 # INSTALLED_APPS setting.
 USE_SOUTH = True
