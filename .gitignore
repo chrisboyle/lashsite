@@ -4,6 +4,7 @@
 .DS_Store
 .coverage
 local_settings.py
+local_secret.py
 /static/*
 !/static/css
 /static/css/*

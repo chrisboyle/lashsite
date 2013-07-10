@@ -2,7 +2,15 @@
 
 import random
 
-secret = ("".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))
+def mksecret():
+   return ("".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))
 
-with open('local_settings.py','w') as f:
-	f.write("DEBUG = True\nSECRET_KEY = \"%s\"\n" % secret)
+secret = mksecret()
+cachekey = mksecret()
+
+with open('local_secret.py','w') as f:
+	f.write( """
+DEBUG = True
+SECRET_KEY = \"%s\"
+NEVERCACHE_KEY= \"%s\"
+""" % (secret,cachekey))
