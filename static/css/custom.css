@@ -19,7 +19,7 @@ a:hover { color: #ff6d2c; }
 }
 #topnav { display: none; }
 @media (max-width: 767px) {
-	#topnav { display: inherit; }
+	#topnav { display: inline; }
 	#leftnav { display: none; }
 	.navbar { margin-bottom: 0; }
 	#home_breadcrumb { display: none; }
