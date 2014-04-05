@@ -1,15 +1,12 @@
 This is a Mezzanine project: http://mezzanine.jupo.org/
 
-You can browse the code of the relevant version of Mezzanine at:
-https://github.com/stephenmcd/mezzanine/tree/1.3.0
-
 Here's how to set up your own local instance of this project:
 (I should probably update these instructions to use a virtualenv at some point...)
 
 git pull git://github.com/chrisboyle/lashsite.git
 cd lashsite
 sudo apt-get install python-pip
-sudo pip install -r requirements/project.txt south
+sudo pip install -r requirements/project.txt
 python mk_local_settings.py
 python manage.py createdb
 python manage.py runserver

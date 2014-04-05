@@ -6,7 +6,10 @@
 {% block main %}
 {{ block.super }}
 
+<div class="row">
+<div class="col-md-6">
 <div class="panel frontblock">
+<div class="panel-body">
 	<h4>Our next gig</h4>
 	{% if event %}
 	{% editable event.title %}
@@ -23,8 +26,12 @@
 	Nothing to announce right now - check back soon!
 	{% endif %}
 </div>
+</div>
+</div>
 
+<div class="col-md-6">
 <div class="panel frontblock last">
+<div class="panel-body">
 	<h4>Latest blog post</h4>
 	{% if blog_post %}
 {% editable blog_post.title %}
@@ -83,6 +90,9 @@
 	Oops, couldn't get the latest post - <a href="/blog">try visiting the blog directly</a>.
 	{% endif %}
 
+</div>
+</div>
+</div>
 </div>
 
 <br style="clear:both">
