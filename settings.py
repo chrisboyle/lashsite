@@ -79,6 +79,8 @@ BLOG_URLS_DATE_FORMAT = 'month'
 
 COMMENTS_USE_RATINGS = False
 
+FORMS_USE_HTML5 = True
+
 # If True, the south application will be automatically added to the
 # INSTALLED_APPS setting.
 USE_SOUTH = True
@@ -159,7 +161,7 @@ STATICFILES_FINDERS = (
 
 # The numeric mode to set newly-uploaded files to. The value should be
 # a mode you'd pass directly to os.chmod.
-FILE_UPLOAD_PERMISSIONS = 0o644
+FILE_UPLOAD_PERMISSIONS = 0644
 
 
 #############

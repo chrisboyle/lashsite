@@ -94,25 +94,25 @@
 
 <h1 id="title">{% block title %}{% endblock %}</h1>
 
-<ul class="breadcrumb">
+<div role="navigation">
+<ul class="breadcrumb visible-sm visible-xs">
 {% spaceless %}
 {% block breadcrumb_menu %}{% page_menu "pages/menus/breadcrumb.html" %}{% endblock %}
 {% endspaceless %}
 </ul>
+</div>
 
     {% block main %}{% endblock %}
 </div>
 
-<div class="col-md-3 right">
+<div class="col-md-3 right expand-xs">
     {% nevercache %}
     {% include "includes/user_panel.html" %}
     {% endnevercache %}
     <div class="panel panel-default">
     <div class="panel-body">
     {% block right_panel %}
-    {% ifinstalled mezzanine.twitter %}
     {% include "twitter/tweets.html" %}
-    {% endifinstalled %}
     {% endblock %}
     </div>
     </div>
@@ -121,7 +121,7 @@
 </div>
 </div>
 
-<footer>
+<footer id="mainfooter">
 <div class="container">
 <div class="row">
 <p class="site-info text-center">

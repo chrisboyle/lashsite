@@ -29,6 +29,12 @@ body > .container {
 .panel, footer {
 	background: rgba(255,255,255, 0.2);
 }
+#mainfooter {
+	margin-top: 0px;
+	padding: 0px;
+	border-top: none;
+	background: none;
+}
 .form-group > input[type="text"],
 .form-group > input[type="password"],
 .form-group > input[type="datetime"],
@@ -50,7 +56,8 @@ body > .container {
 #topnav { display: none; }
 @media (max-width: 767px) {
 	#topnav { display: inline; }
-	#leftnav { display: none; }
+	.expand-xs { padding-left: 0px; padding-right: 0px; border-radius: 0px; }
+	#mainfooter { margin-top: 0px; }
 }
 @media (max-width: 980px) {
 textarea.xlarge { width: 95%; }
