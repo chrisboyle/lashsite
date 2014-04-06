@@ -1,7 +1,8 @@
 {% extends "pages/richtextpage.html" %}
 {% load i18n future mezzanine_tags blog_tags keyword_tags disqus_tags event %}
 
-{% block title %}{{ settings.SITE_TITLE }}{% endblock %}
+{% block whole_meta_title %}{{ settings.SITE_TAGLINE }}{% endblock %}
+{% block title %}{{ settings.SITE_TAGLINE }}{% endblock %}
 
 {% block main %}
 {{ block.super }}
