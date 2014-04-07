@@ -6,6 +6,10 @@
 local_settings.py
 local_secret.py
 /static/*
+!/static/js
+/static/js/*
+!/static/js/*-local.js
 !/static/css
 /static/css/*
+!/static/css/*-local.css
 !/static/css/custom.css
