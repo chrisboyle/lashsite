@@ -342,7 +342,7 @@ FABRIC = {
      "PROJECT_NAME": "lashsite", # Unique identifier for project
      "REQUIREMENTS_PATH": "requirements/project.txt", # Path to pip requirements, relative to project
      "LOCALE": "en_GB.UTF-8", # Should end with ".UTF-8"
-     "LIVE_HOSTNAME": "lashtest2013.absurdity.org.uk", # Host for public site.
+     "LIVE_HOSTNAME": "lashtest.absurdity.org.uk", # Host for public site.
      "REPO_URL": "git://github.com/chrisboyle/lashsite.git", # Git or Mercurial remote repo URL for the project
 }
 
