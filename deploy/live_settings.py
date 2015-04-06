@@ -18,7 +18,7 @@ DATABASES = {
     }
 }
 
-ALLOWED_HOSTS = ['.lashings.org','lashtest2013.absurdity.org.uk']
+ALLOWED_HOSTS = ['.lashings.org','lashtest.absurdity.org.uk']
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTOCOL", "https")
 
