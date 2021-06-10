@@ -1,4 +1,4 @@
-Django==1.6.2
+Django==2.2.24
 Mezzanine==3.0.9
 mezzanine_events==0.1.4
 South==0.8.4
